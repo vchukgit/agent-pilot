@@ -1,0 +1,4 @@
+week,sku,upc,pack_lbs,acv_distribution_pct,unit_sales,dollar_sales,base_unit_sales,base_dollar_sales,is_promo
+9,Chicken & Rice 4lb,00012345601,4,93.1,1850,24024.15,1850,24024.15,False
+9,Chicken & Rice 15lb,00012345602,15,89.5,970,33950.30,970,33950.30,False
+9,Salmon & Sweet Potato 15lb,00012345603,15,73.5,450,17995.50,450,17995.50,False
