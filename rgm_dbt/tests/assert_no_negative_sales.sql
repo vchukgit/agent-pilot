@@ -1,0 +1,3 @@
+{{ config(store_failures=true, schema='dq_failures') }}
+select * from {{ ref('stg_pos_data') }}
+where unit_sales < 0 or dollar_sales < 0

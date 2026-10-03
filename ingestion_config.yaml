@@ -1,0 +1,15 @@
+source_name: sample_data
+
+columns:
+  - name: customer_id
+    type: integer
+  - name: order_date
+    type: date
+  - name: amount
+    type: float
+  - name: region
+    type: string
+  - name: is_returning
+    type: boolean
+
+primary_key: customer_id

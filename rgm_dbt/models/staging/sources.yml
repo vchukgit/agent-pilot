@@ -1,0 +1,35 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: main
+    tables:
+      - name: raw_pos_data
+      - name: _load_manifest
+
+models:
+  - name: stg_pos_data
+    columns:
+      - name: week
+        tests:
+          - not_null:
+              config: {store_failures: true, schema: dq_failures}
+      - name: sku
+        tests:
+          - not_null:
+              config: {store_failures: true, schema: dq_failures}
+          - accepted_values:
+              values: ['Chicken & Rice 4lb', 'Chicken & Rice 15lb', 'Salmon & Sweet Potato 15lb']
+              config: {store_failures: true, schema: dq_failures}
+      - name: acv_distribution_pct
+        tests:
+          - not_null:
+              config: {store_failures: true, schema: dq_failures}
+      - name: unit_sales
+        tests:
+          - not_null:
+              config: {store_failures: true, schema: dq_failures}
+      - name: dollar_sales
+        tests:
+          - not_null:
+              config: {store_failures: true, schema: dq_failures}

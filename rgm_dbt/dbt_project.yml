@@ -1,0 +1,9 @@
+name: 'rgm_pilot'
+version: '1.0.0'
+config-version: 2
+profile: 'rgm_pilot'
+model-paths: ["models"]
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
