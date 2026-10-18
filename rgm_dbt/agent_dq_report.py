@@ -10,7 +10,7 @@ client = Anthropic()
 tools = [
     {
         "name": "get_dq_summary",
-        "description": "Returns the current data quality state: total staged rows, total clean rows, and details of every dbt test failure with sample offending rows. Always use this instead of guessing at data quality.",
+        "description": "Returns the current data quality state: how many week and SKU combinations are loaded and how many have a clean row, every excluded row with the reason and whether it was resolved, anything needing attention, and details of any failing dbt tests. Always use this instead of guessing at data quality.",
         "input_schema": {"type": "object", "properties": {}}
     },
     {
@@ -42,22 +42,26 @@ def write_report(filename, content):
 
 messages = [
     {"role": "user", "content": (
-        "Get the current data quality summary. Then write a DQ report in markdown "
-        "for a data steward. Cover: overall health (rows staged vs. rows that made "
-        "it into the clean dataset), and for each failing test, explain in plain "
-        "language what went wrong and give an explicit recommendation, either "
-        "'safe to auto-resolve' (like an exact duplicate resend, already handled "
-        "automatically) or 'must stay quarantined pending investigation' (an "
-        "impossible or corrupted value that cannot be safely guessed at). Use the "
-        "exact numbers and rows from the tool, do not estimate. Write the result "
-        "to dq_report.md."
+        "Get the current data quality summary. Then write a short DQ report in "
+        "markdown for a data steward. Rules: base every statement on the tool "
+        "output; do not speculate about causes the tool does not state; do not "
+        "invent thresholds, policies, or contacts; do not compute a pass rate "
+        "from staged versus clean row counts, because staged includes old "
+        "versions that later batches replaced, so use current_state instead. "
+        "Cover: (1) current state: how many week and SKU combinations are loaded "
+        "and how many have a clean row; (2) each excluded row group, saying why "
+        "it was excluded and how it was resolved, in plain language; (3) a "
+        "separate section for anything in exclusions_needing_attention, with a "
+        "specific recommended action; if that list is empty, say plainly that "
+        "nothing needs attention; (4) any failing tests, with the offending rows. "
+        "Use the exact numbers from the tool. Write the result to dq_report.md."
     )}
 ]
 
 while True:
     response = client.messages.create(
         model="claude-sonnet-4-5",
-        max_tokens=2000,
+        max_tokens=3000,
         tools=tools,
         messages=messages
     )
@@ -79,7 +83,7 @@ while True:
         print(f"[Claude requested]: {block.name}({block.input})")
 
         if block.name == "get_dq_summary":
-            result = json.dumps(get_dq_summary())
+            result = json.dumps(get_dq_summary(), default=str)
         elif block.name == "write_report":
             result = write_report(**block.input)
         else:

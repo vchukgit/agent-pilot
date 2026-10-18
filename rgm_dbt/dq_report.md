@@ -1,79 +1,32 @@
 # Data Quality Report
 
-**Report Date:** Current Snapshot  
-**Prepared For:** Data Steward
+## Current State
 
----
+The system has loaded **27 week and SKU combinations**, and **27 of them have a clean row**. There are **0 combinations missing a clean row**.
 
-## Executive Summary
+## Excluded Rows
 
-✅ **Overall Health: HEALTHY**
+A total of **4 rows** were excluded from the clean dataset. All excluded rows were resolved by later batches, so no data is missing.
 
-The data pipeline is functioning normally with no test failures detected.
+### Week 9, Chicken & Rice 15lb (batch 2, week_09_delta.csv)
+- **Excluded:** 1 row
+- **Reason:** Negative sales value
+- **Resolution:** A later batch (batch 3) supplied a valid row for this week and SKU, so nothing is missing.
 
----
+### Week 9, Chicken & Rice 4lb (batch 2, week_09_delta.csv)
+- **Excluded:** 2 rows
+- **Reason:** Superseded by later batch
+- **Resolution:** A later batch (batch 3) supplied a valid row for this week and SKU, so nothing is missing.
 
-## Overall Data Quality Metrics
+### Week 9, Salmon & Sweet Potato 15lb (batch 2, week_09_delta.csv)
+- **Excluded:** 1 row
+- **Reason:** ACV out of range
+- **Resolution:** A later batch (batch 3) supplied a valid row for this week and SKU, so nothing is missing.
 
-| Metric | Count | Percentage |
-|--------|-------|------------|
-| **Total Rows Staged** | 31 | 100% |
-| **Rows in Clean Dataset** | 27 | 87.1% |
-| **Rows Excluded/Quarantined** | 4 | 12.9% |
+## Items Needing Attention
 
-### Health Assessment
-
-- **87.1%** of staged data successfully made it into the clean dataset
-- **4 rows** were excluded during the cleaning process
-- **0 active test failures** - all data quality tests are passing
-
----
+Nothing needs attention.
 
 ## Test Results
 
-### ✅ All Tests Passing
-
-No data quality test failures detected. All validation rules are currently satisfied.
-
-The 4 rows that were excluded from the clean dataset were filtered out by the clean model's business logic (not due to test failures). This is expected behavior and represents normal data filtering operations such as:
-- Deduplication logic
-- Business rule exclusions
-- Standard data transformations
-
----
-
-## Recommendations
-
-### Immediate Actions Required
-
-**None** - No immediate action required. All data quality tests are passing.
-
-### Monitoring Notes
-
-1. **Review Excluded Rows**: While no test failures exist, consider periodically reviewing the 4 excluded rows to ensure the clean model's filtering logic is operating as intended.
-
-2. **Maintain Baseline**: Current performance (87.1% pass-through rate) can serve as a baseline for future comparisons.
-
-3. **Continue Monitoring**: Maintain regular data quality checks to ensure continued healthy pipeline operation.
-
----
-
-## Detailed Test Failure Analysis
-
-**No failing tests to report.**
-
-All data quality validations are currently passing. The data pipeline is operating within expected parameters.
-
----
-
-## Glossary
-
-- **Staged Rows**: Raw data ingested into the staging layer before validation and cleaning
-- **Clean Rows**: Validated data that passed all quality checks and business rules
-- **Excluded Rows**: Records filtered out by business logic or failing quality tests
-- **Safe to Auto-Resolve**: Issues that have been automatically handled (e.g., exact duplicates)
-- **Must Stay Quarantined**: Issues requiring manual investigation before resolution
-
----
-
-*End of Report*
+All data quality tests are passing. No failing tests to report.
