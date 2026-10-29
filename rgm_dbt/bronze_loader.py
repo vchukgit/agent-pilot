@@ -43,7 +43,29 @@ next_batch_id = con.execute(
     "SELECT COALESCE(MAX(batch_id), 0) + 1 FROM _load_manifest"
 ).fetchone()[0]
 
-new_files = sorted(glob.glob(os.path.join(INCOMING_DIR, "*.csv")))
+# Arrival order comes from incoming/load_order.txt, not from file names.
+# Later batches win over earlier ones, so the order must be explicit.
+ORDER_FILE = os.path.join(INCOMING_DIR, "load_order.txt")
+if not os.path.exists(ORDER_FILE):
+    raise SystemExit(f"Missing {ORDER_FILE}. List the CSV files in the order they arrived, one per line.")
+
+with open(ORDER_FILE) as f:
+    ordered_names = [
+        line.strip() for line in f
+        if line.strip() and not line.strip().startswith("#")
+    ]
+
+on_disk = {os.path.basename(p) for p in glob.glob(os.path.join(INCOMING_DIR, "*.csv"))}
+unlisted = sorted(on_disk - set(ordered_names))
+missing = [n for n in ordered_names if n not in on_disk]
+if unlisted or missing:
+    if unlisted:
+        print(f"[error] CSV files not listed in {ORDER_FILE}: {unlisted}")
+    if missing:
+        print(f"[error] Listed in {ORDER_FILE} but not found in {INCOMING_DIR}: {missing}")
+    raise SystemExit("Fix load_order.txt and rerun. Nothing was loaded.")
+
+new_files = [os.path.join(INCOMING_DIR, n) for n in ordered_names]
 loaded_any = False
 
 for filepath in new_files:

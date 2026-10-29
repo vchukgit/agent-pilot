@@ -1,0 +1,5 @@
+# Order the files arrived. Later files win over earlier ones for the same week and SKU.
+# Add each new file at the bottom. Blank lines and lines starting with # are ignored.
+week_01_08_initial_load.csv
+week_09_delta.csv
+week_09_corrected.csv
